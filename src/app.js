@@ -11,6 +11,7 @@ app.use(express.json());
 // Khai bao routes
 const userRoutes = require("./routes/user_route");
 app.use("/api/users", userRoutes);
+app.use("/api/products", require("./routes/product_route"));
 
 app.listen(port, hostname, () => {
   console.log(`app listening on port ${port}`);
