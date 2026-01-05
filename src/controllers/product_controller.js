@@ -5,6 +5,31 @@ const getAllProducts = async (req, res) => {
   res.json(data);
 };
 
+const getProductById = async (req, res) => {
+  const data = await ProductService.getById(req.params.id);
+  if (!data) return res.status(404).json({ message: "Not found" });
+  res.json(data);
+};
+
+const CreateProduct = async (req, res) => {
+  const data = await ProductService.create(req.body);
+  res.json({ message: "create success" });
+};
+
+const UpdateProduct = async (req, res) => {
+  await ProductService.update(req.params.id, req.body);
+  res.json({ message: "update success" });
+};
+
+const DeleteProduct = async (req, res) => {
+  await ProductService.delete(req.params.id);
+  res.json({ message: "delete success" });
+};
+
 module.exports = {
   getAllProducts,
+  getProductById,
+  CreateProduct,
+  UpdateProduct,
+  DeleteProduct,
 };

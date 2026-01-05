@@ -7,10 +7,11 @@ const hostname = process.env.HOST_NAME;
 
 // Middleware parse JSON
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Khai bao routes
-const userRoutes = require("./routes/user_route");
-app.use("/api/users", userRoutes);
+const userRouter = require("./routes/user_route");
+app.use("/api/users", userRouter);
 app.use("/api/products", require("./routes/product_route"));
 
 app.listen(port, hostname, () => {

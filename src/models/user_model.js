@@ -47,7 +47,7 @@ class UserModel {
 
     const pool = await poolPromise;
 
-    // Hash password nếu có
+    // Hash password
     let passwordHash = null;
     if (user.password) {
       passwordHash = await bcrypt.hash(user.password, 10);
