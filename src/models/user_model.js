@@ -30,16 +30,21 @@ class UserModel {
 
   static async create(user) {
     const pool = await poolPromise;
-    await pool
+
+    const result = await pool
       .request()
       .input("full_name", sql.NVarChar, user.full_name)
       .input("email", sql.NVarChar, user.email)
       .input("password", sql.NVarChar, user.password)
       .input("phone", sql.NVarChar, user.phone)
       .input("role", sql.NVarChar, user.role || "user").query(`
-        INSERT INTO users(full_name, email, password, phone, role)
-        VALUES(@full_name, @email, @password, @phone, @role)
-      `);
+      SET NOCOUNT ON;
+      INSERT INTO users(full_name, email, password, phone, role)
+      OUTPUT inserted.id, inserted.full_name, inserted.email, inserted.phone, inserted.role
+      VALUES (@full_name, @email, @password, @phone, @role);
+    `);
+
+    return result.recordset[0];
   }
 
   static async update(id, user) {
