@@ -19,6 +19,22 @@ class ProductService {
   static delete(id) {
     return ProductModel.delete(id);
   }
+
+  static getByCategoryId(categoryId) {
+    return ProductModel.getByCategoryId(categoryId);
+  }
+
+  static getUnassigned() {
+    return ProductModel.getUnassigned();
+  }
+
+  static assignToCategory(categoryId, productIds) {
+    return ProductModel.assignToCategory(categoryId, productIds);
+  }
+
+  static removeFromCategory(categoryId, productId) {
+    return ProductModel.removeFromCategory(categoryId, productId);
+  }
 }
 
 module.exports = ProductService;

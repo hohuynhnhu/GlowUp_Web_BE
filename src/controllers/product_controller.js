@@ -82,10 +82,68 @@ const DeleteProduct = async (req, res) => {
   }
 };
 
+const getProductsByCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const products = await ProductService.getByCategoryId(Number(categoryId));
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Lấy sản phẩm chưa thuộc danh mục nào
+const getUnassignedProducts = async (req, res) => {
+  try {
+    const products = await ProductService.getUnassigned();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Gán nhiều sản phẩm vào danh mục
+const assignProductsToCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const { productIds } = req.body; // [1,2,3]
+
+    if (!Array.isArray(productIds) || productIds.length === 0) {
+      return res.status(400).json({ message: "productIds không hợp lệ" });
+    }
+
+    await ProductService.assignToCategory(Number(categoryId), productIds);
+
+    res.json({ message: "Gán sản phẩm vào danh mục thành công" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Gỡ 1 sản phẩm khỏi danh mục
+const removeProductFromCategory = async (req, res) => {
+  try {
+    const { categoryId, productId } = req.params;
+
+    await ProductService.removeFromCategory(
+      Number(categoryId),
+      Number(productId)
+    );
+
+    res.json({ message: "Đã gỡ sản phẩm khỏi danh mục" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getAllProducts,
   getProductById,
   CreateProduct,
   UpdateProduct,
   DeleteProduct,
+  getProductsByCategory,
+  getUnassignedProducts,
+  assignProductsToCategory,
+  removeProductFromCategory,
 };

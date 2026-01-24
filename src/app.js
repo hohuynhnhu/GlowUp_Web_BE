@@ -1,7 +1,6 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
-const jwt = require("jsonwebtoken");
 
 const app = express();
 const port = process.env.PORT || 8082;
@@ -25,6 +24,7 @@ const userRouter = require("./routes/user_route");
 app.use("/api/users", userRouter);
 app.use("/api/products", require("./routes/product_route"));
 app.use("/api/auth", require("./routes/auth_route"));
+app.use("/api/categories", require("./routes/category_route"));
 
 app.listen(port, hostname, () => {
   console.log(`app listening on port ${port}`);

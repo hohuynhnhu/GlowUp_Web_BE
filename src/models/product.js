@@ -63,6 +63,62 @@ class ProductModel {
       .input("id", sql.Int, id)
       .query("DELETE FROM products WHERE id=@id");
   }
+
+  // Sản phẩm thuộc 1 danh mục
+  static async getByCategoryId(categoryId) {
+    const pool = await poolPromise;
+    const result = await pool.request().input("categoryId", sql.Int, categoryId)
+      .query(`
+        SELECT * FROM products
+        WHERE category_id = @categoryId
+      `);
+
+    return result.recordset;
+  }
+
+  //  Sản phẩm chưa có danh mục
+  static async getUnassigned() {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`
+      SELECT * FROM products
+      WHERE category_id IS NULL
+    `);
+
+    return result.recordset;
+  }
+
+  //  Gán nhiều sản phẩm vào danh mục
+  static async assignToCategory(categoryId, productIds) {
+    if (!productIds.length) return;
+
+    const pool = await poolPromise;
+    const request = pool.request();
+    request.input("categoryId", sql.Int, categoryId);
+
+    const placeholders = productIds.map((id, index) => {
+      request.input(`id${index}`, sql.Int, id);
+      return `@id${index}`;
+    });
+
+    await request.query(`
+      UPDATE products
+      SET category_id = @categoryId
+      WHERE id IN (${placeholders.join(",")})
+    `);
+  }
+
+  //  Gỡ sản phẩm khỏi danh mục
+  static async removeFromCategory(categoryId, productId) {
+    const pool = await poolPromise;
+    await pool
+      .request()
+      .input("categoryId", sql.Int, categoryId)
+      .input("productId", sql.Int, productId).query(`
+        UPDATE products
+        SET category_id = NULL
+        WHERE id = @productId AND category_id = @categoryId
+      `);
+  }
 }
 
 module.exports = ProductModel;
