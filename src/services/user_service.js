@@ -2,8 +2,8 @@ const UserModel = require("../models/user_model");
 const bcrypt = require("bcryptjs");
 
 class UserService {
-  static async getAll() {
-    return await UserModel.getAll();
+  static async getAll(excludeUserId) {
+    return UserModel.getAll(excludeUserId);
   }
 
   static async getById(id) {

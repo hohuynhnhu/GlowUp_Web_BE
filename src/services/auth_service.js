@@ -10,9 +10,15 @@ class AuthService {
     const hashPassword = await bcrypt.hash(data.password, 10);
     const user = await UserModel.create({ ...data, password: hashPassword });
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
     return { ...user, token };
   }
@@ -24,11 +30,23 @@ class AuthService {
     const isMatch = await bcrypt.compare(data.password, user.password);
     if (!isMatch) throw new Error("Wrong email or password");
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
-    return { userId: user.id, email: user.email, token };
+    return {
+      userId: user.id,
+      email: user.email,
+      full_name: user.full_name,
+      role: user.role,
+      token,
+    };
   }
 }
 

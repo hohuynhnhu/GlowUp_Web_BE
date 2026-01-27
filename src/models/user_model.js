@@ -3,11 +3,18 @@ const { poolPromise } = require("../config/db");
 const bcrypt = require("bcryptjs");
 
 class UserModel {
-  static async getAll() {
+  static async getAll(excludeUserId) {
     const pool = await poolPromise;
-    const result = await pool.request().query(`
-      SELECT * FROM users
-    `);
+
+    let query = `SELECT * FROM users`;
+    const request = pool.request();
+
+    if (excludeUserId) {
+      query += ` WHERE id <> @excludeUserId`;
+      request.input("excludeUserId", sql.Int, excludeUserId);
+    }
+
+    const result = await request.query(query);
     return result.recordset;
   }
 
