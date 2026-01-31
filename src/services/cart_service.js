@@ -54,6 +54,11 @@ class CartService {
     await CartItemModel.deleteAllByCartId(cartId);
     return { message: "Cart cleared successfully" };
   }
+
+  static async updateItemQuantity(itemId, quantity) {
+    await CartItemModel.updateQuantityById(itemId, quantity);
+    return { message: "Item quantity updated successfully" };
+  }
 }
 
 module.exports = CartService;

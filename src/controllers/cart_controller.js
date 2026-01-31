@@ -70,10 +70,26 @@ const clearCart = async (req, res) => {
   }
 };
 
+const updateItemQuantity = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    if (!id || quantity === undefined) {
+      return res.status(400).json({ message: "Item ID and quantity are required" });
+    }
+    const result = await CartService.updateItemQuantity(Number(id), Number(quantity));
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error while updating item quantity" });
+  }
+};
+
 module.exports = {
   getCartByUserId,
   addItemToCart,
   createCart,
   removeItemFromCart,
   clearCart,
+  updateItemQuantity,
 };

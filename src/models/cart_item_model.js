@@ -65,6 +65,15 @@ class CartItemModel {
       .input("cartId", sql.Int, cartId)
       .query("DELETE FROM cart_items WHERE cart_id = @cartId");
   }
+
+  static async updateQuantityById(id, quantity) {
+    const pool = await poolPromise;
+    await pool
+      .request()
+      .input("id", sql.Int, id)
+      .input("quantity", sql.Int, quantity)
+      .query("UPDATE cart_items SET quantity = @quantity WHERE id = @id");
+  }
 }
 
 module.exports = CartItemModel;
