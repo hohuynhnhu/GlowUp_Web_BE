@@ -5,10 +5,14 @@ const {
   getCartByUserId,
   addItemToCart,
   createCart,
+  removeItemFromCart,
+  clearCart,
 } = require("../controllers/cart_controller");
 
-router.get("/user/:userId", getCartByUserId);
-router.post("/add", addItemToCart);
-router.post("/create", createCart);
+router.get("/get-cart-by-user/:userId", getCartByUserId);
+router.post("/add-item", addItemToCart);
+router.post("/create-cart", createCart);
+router.delete("/remove-item/:id", removeItemFromCart);
+router.delete("/clear-all-cart-item/:cartId", clearCart);
 
 module.exports = router;

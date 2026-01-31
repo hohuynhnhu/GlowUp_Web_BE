@@ -42,8 +42,38 @@ const createCart = async (req, res) => {
   }
 };
 
+const removeItemFromCart = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: "Item ID is required" });
+    }
+    const result = await CartService.removeItemFromCart(Number(id));
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error while removing item from cart" });
+  }
+};
+
+const clearCart = async (req, res) => {
+  try {
+    const { cartId } = req.params;
+    if (!cartId) {
+      return res.status(400).json({ message: "Cart ID is required" });
+    }
+    const result = await CartService.clearCart(Number(cartId));
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error while clearing cart" });
+  }
+};
+
 module.exports = {
   getCartByUserId,
   addItemToCart,
   createCart,
+  removeItemFromCart,
+  clearCart,
 };

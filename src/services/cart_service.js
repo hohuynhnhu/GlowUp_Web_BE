@@ -44,6 +44,16 @@ class CartService {
     const newCart = await CartModel.create(userId);
     return { message: "Cart created successfully", cart: newCart };
   }
+
+  static async removeItemFromCart(itemId) {
+    await CartItemModel.deleteById(itemId);
+    return { message: "Item removed from cart successfully" };
+  }
+
+  static async clearCart(cartId) {
+    await CartItemModel.deleteAllByCartId(cartId);
+    return { message: "Cart cleared successfully" };
+  }
 }
 
 module.exports = CartService;
