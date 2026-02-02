@@ -30,13 +30,16 @@ class ProductModel {
       .input("name", sql.NVarChar, data.name)
       .input("brand", sql.NVarChar, data.brand)
       .input("gender", sql.NVarChar, data.gender)
-      .input("price", sql.Decimal, data.price)
+      .input("price", sql.Decimal(12, 0), data.price)
       .input("quantity", sql.Int, data.quantity)
       .input("description", sql.NVarChar, data.description)
-      .input("images", sql.NVarChar, JSON.stringify(data.images || [])).query(`
-        INSERT INTO products(name,brand,gender,price,quantity,description,images)
-        VALUES(@name,@brand,@gender,@price,@quantity,@description,@images)
-      `);
+      .input("images", sql.NVarChar, JSON.stringify(data.images || []))
+      .input("category_id", sql.Int, data.category_id).query(`
+      INSERT INTO products
+      (name, brand, gender, price, quantity, description, images, category_id)
+      VALUES
+      (@name, @brand, @gender, @price, @quantity, @description, @images, @category_id)
+    `);
   }
 
   static async update(id, data) {
@@ -45,15 +48,21 @@ class ProductModel {
       .request()
       .input("id", sql.Int, id)
       .input("name", sql.NVarChar, data.name)
-      .input("price", sql.Decimal, data.price ?? null)
+      .input("price", sql.Decimal(12, 0), data.price ?? null)
       .input("quantity", sql.Int, data.quantity)
       .input("description", sql.NVarChar, data.description)
-      .input("images", sql.NVarChar, JSON.stringify(data.images || [])).query(`
-        UPDATE products
-        SET name=@name, price=@price, quantity=@quantity,
-            description=@description, images=@images
-        WHERE id=@id
-      `);
+      .input("images", sql.NVarChar, JSON.stringify(data.images || []))
+      .input("category_id", sql.Int, data.category_id).query(`
+      UPDATE products
+      SET 
+        name = @name,
+        price = @price,
+        quantity = @quantity,
+        description = @description,
+        images = @images,
+        category_id = @category_id
+      WHERE id = @id
+    `);
   }
 
   static async delete(id) {

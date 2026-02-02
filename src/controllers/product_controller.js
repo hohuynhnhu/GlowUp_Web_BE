@@ -15,16 +15,32 @@ const getProductById = async (req, res) => {
 };
 
 const CreateProduct = async (req, res) => {
-  const images = req.files.map((f) => f.filename);
-  const data = { ...req.body, images };
-  await ProductService.create(data);
-  res.json({ message: "create success" });
+  try {
+    const images = req.files ? req.files.map((f) => f.filename) : [];
+    const { category_id } = req.body;
+
+    if (!category_id) {
+      return res.status(400).json({ message: "Danh mục là bắt buộc" });
+    }
+
+    const data = {
+      ...req.body,
+      category_id: Number(category_id),
+      images,
+    };
+
+    await ProductService.create(data);
+    res.json({ message: "Tạo sản phẩm thành công" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Lỗi server khi tạo sản phẩm" });
+  }
 };
 
 const UpdateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, quantity, description } = req.body;
+    const { name, price, quantity, description, category_id } = req.body;
 
     if (!name)
       return res.status(400).json({ message: "Tên sản phẩm là bắt buộc" });
@@ -44,6 +60,7 @@ const UpdateProduct = async (req, res) => {
       quantity: quantity ? Number(quantity) : 0,
       description: description || "",
       images,
+      category_id: category_id ? Number(category_id) : oldProduct.category_id,
     };
 
     await ProductService.update(id, data);
