@@ -3,10 +3,8 @@ const { sql, poolPromise } = require("../config/db");
 class CategoryModel {
   static async getAll() {
     const pool = await poolPromise;
-    const result = await pool.request().query(
-      "SELECT * FROM categories"
-    );
-    return result.recordset;
+    const result = await pool.request().query("SELECT * FROM categories");
+    return result;
   }
 
   static async getById(id) {
@@ -16,7 +14,7 @@ class CategoryModel {
       .input("id", sql.Int, id)
       .query("SELECT * FROM categories WHERE id = @id");
 
-    return result.recordset[0] || null;
+    return result;
   }
 
   static async create(data) {
