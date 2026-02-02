@@ -4,9 +4,9 @@ class CategoryModel {
   static async getAll() {
     const pool = await poolPromise;
     const result = await pool.request().query(
-      "SELECT * FROM categories"
+      `SELECT * FROM categories`
     );
-    return result.recordset;
+    return result;
   }
 
   static async getById(id) {
