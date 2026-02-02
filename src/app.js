@@ -14,7 +14,16 @@ app.use(
 );
 
 // Middleware parse JSON
-app.use(express.json());
+// app.use(express.json());
+app.use((req, res, next) => {
+  if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
+    express.json({ strict: false })(req, res, next);
+  } else {
+    next();
+  }
+});
+
+
 app.use(express.urlencoded({ extended: true }));
 // Cho phép public folder ảnh
 app.use("/uploads", express.static("src/uploads"));
@@ -27,7 +36,7 @@ app.use("/api/auth", require("./routes/auth_route"));
 app.use("/api/categories", require("./routes/category_route"));
 app.use("/api/vouchers", require("./routes/voucher_route"));
 app.use("/api/carts", require("./routes/cart_route"));
-app.use("/api/vouchers", require("./routes/voucher_routes"));
+
 app.use("/api/vnpay", require("./routes/vnpay_route"));
 
 app.listen(port, hostname, () => {
